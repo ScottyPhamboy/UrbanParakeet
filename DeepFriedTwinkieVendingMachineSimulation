@@ -1,0 +1,77 @@
+//Date:        10-17-2019
+//Description: The program is gonna is gonna simulate a vending machine that serves deep-fried
+//             twinkie. user is gonna input an amount with different types of coins. The program
+//             will tell the user whether he/she has inputted a correct or incorrect amount.
+
+#include <iostream>
+
+using namespace std;
+
+double amountinserted(double quarters, double dollars, double dimes, double nickels);
+//Calls out the function to compute number of coins inputted by user
+
+int main()
+{
+
+    double amount, quarters, dollars, dimes, nickels;
+    char ans;
+    //Variables
+
+    cout.setf(ios::showpoint);
+    cout.setf(ios::fixed);
+    cout.precision(2);
+    cout << "In this program, user is gonna input amount in coins such as dollar coins,\n"
+         << "dimes, quarters, and nickels. The program will simulate a vending machine\n"
+         << "that requires $3.50 to receive a twinkie. Wow.\n";
+         //Introduction
+
+    do
+    {
+        cout << "\nPress return after entering a value.\nEnter your dollar coins.\n"
+             << "Dollar coins: ";
+        cin  >> dollars;
+        cout << "Enter your quarters.\nQuarters: ";
+        cin  >> quarters;
+        cout << "Enter your dimes.\nDimes: ";
+        cin  >> dimes;
+        cout << "Enter your nickels.\nNickels: ";
+        cin  >> nickels;
+        //User input information
+
+        amount = amountinserted(quarters, dollars, dimes, nickels);
+        //Calculates the number of coins inputted by user
+
+        cout << "\nYou inserted the amount of $" << amount << endl;
+        //Displays amount
+
+        if(amount >= 3.5)
+        //Checks whether amount is inputted correctly or incorrectly
+        {
+            cout << "\nEnjoy your fried deep-fried twinkie!";
+        }
+        else
+        {
+            cout << "\nInvalid amount. Sorry boss.";
+        }
+
+        cout << "\nRepeat program? Y= Yes, N = No\n"
+             << "Your answer: ";
+        cin  >> ans;
+
+    }while(ans == 'y' || ans == 'Y');
+    //User can repeat program
+
+    cout << "\nGoodbye.";
+    return 0;
+}
+
+double amountinserted(double quarters, double dollars, double dimes, double nickels)
+//Calculates the number of coins inputted by user
+{
+    double amount;
+
+    amount = (quarters * 0.25) + (dollars * 1) + (dimes * 0.1) + (nickels * 0.05);
+    //Calculates number of coins
+
+    return amount;
+}
