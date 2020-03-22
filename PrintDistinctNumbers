@@ -1,0 +1,58 @@
+//JAVA
+//Date: 	      11/21/19
+/*Description: Program that reads ten numbers and displays distinct numbers */
+
+import java.util.Scanner;
+
+public class DistinctNumbers
+{
+   public static void main(String [] args)
+   {
+      Scanner input = new Scanner(System.in);
+      
+      //Initialize variables
+      int number = 0;
+      int[] numList = new int[10];
+      
+      //Describe program to user
+      showDescription();
+      
+      //Place user input into array
+      System.out.print("Please enter ten numbers: ");
+      for (int i = 0; i < 10; i++)
+      {
+         //Store user input to process throughout array
+         number = input.nextInt();
+         
+         //cycle through array to search for duplicates
+         for (int j = 0; j < 10; j++)
+         {
+            //if statements to determine if duplicate number should not be added to array
+            if (number == numList[j])
+            {
+               number = 0;
+               break; //no need to continue through array with duplicate number
+            }
+            //If no duplicate user inputs are found, place into array
+            else if (number != numList[j] && numList[j] == 0)
+            {
+               numList[j] = number;
+               break; //leave the rest of the open spots as 0
+            }
+         }
+      }
+      
+      //Display result to user
+      for (int i = 0; i < 10; i++)
+      {
+         if (numList[i] != 0) //If number is 0, do not display
+            System.out.print(numList[i] + " ");
+      }
+   }
+   
+   //SHOW DESCRIPTION METHOD
+   private static void showDescription()
+   {
+      System.out.println("This program will read ten numbers and display the number of distinct numbers");
+   }
+}
