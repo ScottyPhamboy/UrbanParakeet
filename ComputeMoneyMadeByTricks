@@ -1,0 +1,129 @@
+//JAVA
+//Date:        11-5-2019
+//Description: In this program, user will input the number of cartwheel, handstand, roll, and walkover. 
+//             Each moves has their own set values so it will compute data given by user for four 
+//             weeks and computes the amount made in those four weeks. It would also compute 
+//             average in a week and potential amount in a year assuming a 
+//             year consist of 35 weeks.
+
+import java.util.Scanner;
+
+public class Midterm
+{
+   public static void main(String [] args)
+   {
+      Scanner input = new Scanner(System.in);
+      
+      final double HANDSTAND = 0.20;
+      final double CARTWHEEL = 0.15;
+      final double ROLL = 0.12;
+      final double WALKOVER = 0.05;
+      //Important set values
+      
+      int handstand, cartwheel, roll, walkover; 
+      //Input by user will go to these values
+      
+      double handstandCount, cartwheelCount, rollCount, walkoverCount;
+      //Adds up total moves for each type of moves
+      
+      double computation, average, oneYear;
+      handstandCount = 0;
+      cartwheelCount = 0;
+      rollCount = 0;
+      walkoverCount = 0;
+      //Set total number for each move to zero
+      //The number of moves input by user will go to moveCounts variable
+      
+      String ans;
+      //For user to repeat calculations 
+      
+      description();
+      //Calls out the method to display description
+      
+      do
+      {
+         for(int count = 1; count <= 4; count++)
+         {
+            System.out.printf("Number of handstands, cartwheels, rolls, and walkovers for week %-1d: %-1d %-1d %-1d %-1d\n", 
+                              count, (handstand = input.nextInt()), cartwheel = input.nextInt(), roll = input.nextInt(),
+                              walkover = input.nextInt());
+            
+            if(handstand <= 0)
+            {
+               handstand = 0;
+            }
+            
+            if(cartwheel <= 0)
+            {
+               cartwheel = 0;
+            }
+            
+            if(roll <= 0)
+            {
+               roll = 0;
+            }
+            
+            if(walkover <= 0)
+            {
+               walkover = 0;
+            }
+            //If user were to input negative values then
+            //the program will convert it to zero
+            
+            handstandCount += handstand;
+            cartwheelCount += cartwheel;
+            rollCount += roll;
+            walkoverCount += walkover;
+            //Adds up total amount for each moves
+            
+         }
+         
+         handstandCount = (double)handstandCount;
+         cartwheelCount = (double)cartwheelCount;
+         rollCount = (double)rollCount;
+         walkoverCount = (double)walkoverCount;
+         //Set int values to double for efficient calculations
+         
+         computation = (handstandCount * HANDSTAND)+(cartwheelCount * CARTWHEEL)+(rollCount * ROLL)+(walkoverCount * WALKOVER);
+         //Computes the total number of moves times the value of those moves
+         
+         average = computation/4.0;
+         //Computes avarage
+         
+         oneYear = average * 35.0;
+         //Computes one year's worth
+
+         System.out.printf("After 4 weeks:\n"+
+                           "Handstand(s): %5.0f\n"+
+                           "Cartwheel(s): %5.0f\n"+
+                           "Roll(s): %10.0f\n"+
+                           "Walkover(s): %6.0f\n\n"+
+                           "Amount after 4 weeks: %12.2f\n"+
+                           "Weekly average: %18.2f\n"+
+                           "Estimated annual amount: %10.2f\nRepeat calculations?\nYour input: ", 
+                           handstandCount, cartwheelCount, rollCount, walkoverCount, 
+                           computation, average, oneYear);
+                           //End result
+                           
+          ans = input.next();
+          //Incase user wants to repeat calculations
+
+      }while(!(ans.equals("Q") || ans.equals("q")));
+      
+      System.out.println("\nGoodbye");
+      //The end of the program
+   }
+   
+   private static void description()
+   //Displays description of the program
+   
+   {
+      System.out.println("In this program, user will input the number of cartwheel, handstand, roll,\n"+
+                         "and walkover. Each moves has their own set values so it will compute data\n"+
+                         "given by user for four weeks and computes the amount made in those four\n"+
+                         "weeks. It would also compute average in a week and potential amount in\n"+
+                         "a year assuming a year consist of 35 weeks.\n"+
+                         "Input the number of moves committed in a week in the order of\n"+
+                         "Handsand => cartwheels => rolls => walkovers\n");
+   }
+}
