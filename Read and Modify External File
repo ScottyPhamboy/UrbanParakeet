@@ -1,0 +1,385 @@
+//Date: 11/27/2019
+//Description: application that reads a file, modify its content, and writes the modification back to the same file
+#include<iostream>
+#include<cstdlib>
+#include<fstream>
+#include <conio.h>//for getch
+
+using namespace std;
+
+void showMenu();
+//shows menu of choices;
+void readFile(int a[],int& numUsed, int& listIndex);
+//opens file and puts values inside array a[]
+//and counts how many values there are (numUsed)
+void showList(const int a[], int numUsed, int listIndex);
+//displays all values in array and shows selected value
+void selectRight(int numUsed, int& listIndex);
+//increments listIndex to show that the index select moves right
+void selectLeft(int numUsed, int& listIndex);
+//decrements listIndex
+void moveRight(int a[],int numUsed, int& listIndex);
+//swaps value with the value to the right of
+//the active index and increments index
+void moveLeft(int a[],int numUsed, int& listIndex);
+//swaps value with the value to the left of
+//the active index and decrements index
+void insertValue(int a[], int& numUsed, int& listIndex);
+//increase the number of values used
+//in array and puts a value in the active listIndex
+void deleteValue(int a[], int& numUsed, int& listIndex);
+//deletes selected value by decrementing numUsed
+//shifts all value from the right of the listIndex down 1 to the left
+void sortArray(int a[], int aUsed, int& activeIndex);
+//sorts array from largest to smallest
+//searches sorted array for the index of the formerly selected value
+void rewriteFile(int a[], int aUsed, int activeIndex);
+//rewrites new array into file
+
+
+
+//helper functions
+bool arrayFull(int numUsed);
+//check if array full
+bool arrayEmpty(int numUsed);
+//check if empty
+bool isLastSelected(int numUsed, int listIndex);
+//check if a[numUsed-1] is selected
+bool isFirstSelected(int numUsed, int listIndex);
+//check if a[0] is selected
+void swapValues(int& v1, int& v2);
+//swaps 2 values
+void shiftRight(int a[], int activeIndex, int& numUsed);
+//shifts array to the right
+void shiftLeft(int a[], int activeIndex, int& numUsed);
+//shifts array left
+void sortArraySmalltoBig(int a[],int aUsed);
+//sorts array from smallest to largest
+int searchArray(int arr[], int len, int target);
+//searches for the index of a value in the array
+void inFileCheck(ifstream& file1);
+//check if file was able to be opened
+void outFileCheck(ofstream& file1);
+//check if file was able to be opened
+
+
+
+
+const int MAXSIZE(10);//maximum of 10 integers in array
+const char FILE_NAME[15] = "test.txt";
+
+int main()
+{
+    int numbers[MAXSIZE];
+    int numUsed(0);//how many values in array are used
+    int listIndex;
+
+    readFile(numbers,numUsed,listIndex);
+
+    int scanCode;
+
+    do
+    {
+        //display menu and array read from file
+        showMenu();
+        showList(numbers,numUsed,listIndex);
+
+        scanCode = getch();//to get values for keyboard inputs
+
+        if (scanCode == 224 || scanCode == 0)
+            scanCode = getch();
+
+        switch(scanCode)//interact with menu using switch
+        {
+            case 49://1 or right arrow
+            case 77:
+                selectRight(numUsed,listIndex);
+                break;
+            case 50://2 or left arrow
+            case 75:
+                selectLeft(numUsed,listIndex);
+                break;
+            case 51://3 or up arrow
+            case 72:
+                moveRight(numbers,numUsed,listIndex);
+                break;
+            case 52://4 or down arrow
+            case 80:
+                moveLeft(numbers,numUsed,listIndex);
+                break;
+            case 53://5 or insert key
+            case 82:
+                insertValue(numbers,numUsed,listIndex);
+                break;
+            case 54://6 or delete key
+            case 83:
+                deleteValue(numbers,numUsed,listIndex);
+                break;
+            case 55://7 or f2
+            case 60:
+                sortArray(numbers, numUsed,listIndex);
+                break;
+            case 56://8 or f1
+            case 59:
+                rewriteFile(numbers,numUsed,listIndex);
+                cout << "Goodbye\n";
+                system("PAUSE");
+                break;
+        }
+        system("CLS"); //clears screen
+
+    }while (!(scanCode == 56 || scanCode == 59));
+
+
+
+    return 0;
+}
+void showMenu()
+{
+    cout << "Select Right......\"1\" or \"Right Arrow\" key\n"
+         << "Select Left.......\"2\" or \"Left Arrow\" key\n"
+         << "Move Right........\"3\" or \"Up Arrow\" key\n"
+         << "Move Left.........\"4\" or \"Down Arrow\" key\n"
+         << "Insert............\"5\" or \"Insert\" key\n"
+         << "Delete............\"6\" or \"Delete\" key\n"
+         << "Sort..............\"7\" or \"F2\" key\n"
+         << "Exit..............\"8\" or \"F1\" key\n";
+}
+void readFile(int a[],int& numUsed, int& listIndex)
+{
+    ifstream fin;
+    fin.open(FILE_NAME);
+    inFileCheck(fin);
+
+    fin >> listIndex;
+   /* if (listIndex == -1)
+        listIndex = 0;//file is empty*/
+
+
+    while(fin >> a[numUsed])
+    {
+        numUsed++;
+    }
+    //cout << "*****"<<numUsed<<"**";
+    fin.close();
+
+}
+void rewriteFile(int a[], int aUsed, int activeIndex)
+{
+    ofstream file1;
+    file1.open(FILE_NAME);
+    outFileCheck(file1);
+
+    file1 << activeIndex << endl;
+    for(int i=0; i<aUsed; i++)
+    {
+        file1 << a[i] << " ";
+    }
+    file1.close();
+}
+
+void showList(const int a[], int numUsed, int listIndex)
+{
+    for(int i=0; i<numUsed ; i++)
+    {
+        if(listIndex == i)
+            cout <<"<"<<a[i]<<"> ";
+        else
+            cout << a[i]<<" ";
+    }
+    if (arrayEmpty(numUsed))
+        cout <<"< >";
+    cout << endl;//go to next line after showing list
+}
+void selectRight(int numUsed, int& listIndex)
+{
+    if (isLastSelected(numUsed, listIndex))
+        listIndex=0;
+    else if(arrayEmpty(numUsed))
+    {
+        cout << "Array is empty\n";
+        system("PAUSE");
+    }
+    else
+        listIndex++;
+}
+void selectLeft(int numUsed, int& listIndex)
+{
+    if (isFirstSelected(numUsed,listIndex))
+        listIndex = numUsed-1;//go to end of array
+    else if(arrayEmpty(numUsed))
+    {
+        cout << "Array is empty\n";
+        system("PAUSE");
+    }
+    else
+        listIndex--;
+}
+void moveRight(int a[],int numUsed, int& listIndex)
+{
+    if(isLastSelected(numUsed,listIndex))
+    {
+        cout << "End of List.\n";
+        system("PAUSE");
+    }
+    else if(arrayEmpty(numUsed))
+    {
+        cout << "Array is empty\n";
+        system("PAUSE");
+    }
+    else
+    {
+        swapValues(a[listIndex],a[listIndex+1]);
+        listIndex++;
+    }
+}
+void moveLeft(int a[],int numUsed, int& listIndex)
+{
+    if(isFirstSelected(numUsed,listIndex))
+    {
+        cout << "End of List.\n";
+        system("PAUSE");
+    }
+    else if(arrayEmpty(numUsed))
+    {
+        cout << "Array is empty\n";
+        system("PAUSE");
+    }
+
+    else
+    {
+        swapValues(a[listIndex],a[listIndex-1]);
+        listIndex--;
+    }
+}
+void insertValue(int a[], int& numUsed, int& listIndex)
+{
+    int integer;
+    cout << "Please enter an integer: input number:\n";
+    cin >> integer;
+
+    if(arrayEmpty(numUsed))//if array is empty numUsed is 0 and listIndex is -1
+    {
+        a[0]=integer;
+        listIndex++;//listIndex becomes 0 which is first value
+        numUsed++;//numUsed is 1
+    }
+    else if(arrayFull(numUsed))
+    {
+        cout << "Array Full. Insertion not possible.\n";
+        system("PAUSE");
+    }
+    else
+    {
+        shiftRight(a, listIndex, numUsed);
+        a[listIndex] = integer;
+        numUsed++;
+    }
+}
+void deleteValue(int a[], int& numUsed, int& listIndex)
+{
+    if(!arrayEmpty(numUsed))
+    {
+        if(isLastSelected(numUsed,listIndex))
+        {
+            listIndex--;
+        }
+        else
+            shiftLeft(a,listIndex,numUsed);
+        numUsed--;
+    }
+    else
+    {
+        cout<<"Delete not possible\n";
+        system("PAUSE");
+    }
+}
+void sortArray(int a[], int aUsed, int& activeIndex)
+{
+    int value = a[activeIndex];
+    sortArraySmalltoBig(a,aUsed);
+    activeIndex = searchArray(a,aUsed,value);
+}
+
+/////Helper Functions//////////////////////////////////////////////////
+bool arrayFull(int numUsed)
+{
+    return(numUsed==MAXSIZE);
+}
+bool arrayEmpty(int numUsed)
+{
+    return(numUsed == 0);
+}
+bool isLastSelected(int numUsed, int listIndex)
+{
+    return(listIndex==numUsed-1);
+}
+bool isFirstSelected(int numUsed, int listIndex)
+{
+    return(listIndex==0);
+}
+void shiftRight(int a[], int activeIndex, int& numUsed)
+{
+    for(int i = numUsed;i>activeIndex; i--)
+    {
+        a[i] = a[i-1];
+    }
+
+
+}
+void shiftLeft(int a[], int activeIndex, int& numUsed)
+{
+    for(int i = activeIndex;i<numUsed-1; i++)
+    {
+        a[i] = a[i+1];
+    }
+
+}
+void swapValues(int& v1, int& v2)
+{
+    int temp;
+    temp = v1;
+    v1 = v2;
+    v2 = temp;
+}
+void inFileCheck(ifstream& file1)
+{
+    if(file1.fail())//check if success
+    {
+        cout << "Input file opening failed.\n";
+        exit(1);
+    }
+}
+void outFileCheck(ofstream& file1)
+{
+    if(file1.fail())//check
+    {
+        cout << "Output file opening failed.\n";
+        exit(1);
+    }
+}
+void sortArraySmalltoBig(int a[],int aUsed)
+{
+    int temp, i, j;
+    for(i=0; i<aUsed; i++)
+    {
+        for(j=i+1; j<aUsed; j++)
+        {
+            //If there is a smaller element found on right of the array then swap it.
+            if(a[j] < a[i])
+            {
+                temp = a[i];
+                a[i] = a[j];
+                a[j] = temp;
+            }
+        }
+    }
+}
+int searchArray(int arr[], int len, int target)
+{
+    for (int i = 0; i < len; ++i)
+    {
+        if (arr[i] == target) return i;
+    }
+    return -1;
+}
