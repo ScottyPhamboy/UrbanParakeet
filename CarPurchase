@@ -1,0 +1,588 @@
+//Date:        10-31-2019
+//Description: User will want to purchase a new car because his current car is on a verge of breaking down and
+//             finds a car application online. User will input information like name, phone, address, and payment
+//             along with the desired vehicle and accessories if desired. The program will compute the cost of
+//             vehicle with/without accessories and display confirmation order. If user is missing any fields
+//             then the program will display an error message.
+
+#include <iostream>
+using namespace std;
+
+void description();
+//Display descriptions
+void mainMenu();
+//Display the main menu
+void inputClientInfo();
+//Display sub menu for client input of information
+void mainSelection();
+//Display menu where client will choose their desired vehicle
+void options();
+//Display menu where client can choose their accessories
+void paymentMethod();
+//Display payment method menu
+void displayConfirmation();
+//Display the grand total and full order
+string getName();
+//Get name
+string getPhonenumber();
+//Get number
+string getAddress();
+//Get address
+string getCardNumber();
+//Get card number if applicable
+string getCardPayment(string cardNumber, string cardType);
+//Combines card type and card number
+bool isOrderComplete(string name, string phoneNumber, string address,
+                     string mainselection, string payment);
+                     //Checks if order is complete
+string displayErrors(string name, string phoneNumber, string address,
+                     string mainselection, string payment);
+                     //Displays errors
+double computation(double primaryselection, double secondaryselection, double tax);
+//Adds up the cost of vehicle and accessories if any
+string gifts(int optionCount);
+//Displays gift based on number of options user has selected
+void displayConfirmation(string name, string phoneNumber, string address, string mainselection,
+                         string payment, string option, string gift, double grandTotal, int optionCount);
+                         //Displays the whole confirmation order
+
+int main()
+{
+    const double TAX(0.0975);
+    int choice, subchoice, optionCount, sunroofCheck, airbagCheck;
+    int airconditionerCheck, navigationCheck, dvdCheck;
+    //Variables with the word "check" in it prevents user from
+    //selecting the same option multiple times
+
+    double mainSelectionCost, optionsCost, grandTotal;
+    bool status;
+    //Variables for this program
+
+    sunroofCheck = 0;
+    airbagCheck = 0;
+    airconditionerCheck = 0;
+    navigationCheck = 0;
+    dvdCheck = 0;
+    //Prevents user from
+    //selecting the same
+    //option multiple times
+
+    string name = "";
+    string phoneNumber = "";
+    string address = "";
+    string mainselection = "";
+    string option = "";
+    string gift = "";
+    string payment = "";
+    string paymentType = "";
+    string cardnumber = "";
+
+    mainSelectionCost = 0;
+    optionsCost = 0;
+    optionCount = 0;
+    //Option count checks how many options
+    //user has selected and will prompt a gift
+
+    cout.setf(ios::showpoint);
+    cout.setf(ios::fixed);
+    cout.precision(2);
+    description();
+    //Displays description
+    do
+    {
+        mainMenu();
+        //Display main menu
+        cout << "\nYour input: ";
+        cin  >> choice;
+        //User will start with the main menu
+        switch(choice)
+        {
+        case 1:
+            do
+            {
+                inputClientInfo();
+                cout << "\nYour input: ";
+                cin  >> subchoice;
+                //User will input their basic information like
+                //name, address, and phone number
+
+                switch(subchoice)
+                {
+                case 1:
+                    name = getName();
+                    break;
+                case 2:
+                    phoneNumber = getPhonenumber();
+                    break;
+                case 3:
+                    address = getAddress();
+                    break;
+                case 4:
+                    cout << "";
+                    //To distinguish the difference between
+                    //"wrong input" and case 4
+                    break;
+                default:
+                    cout << "Incorrect input.\n";
+                    break;
+                }
+            }while(subchoice != 4);
+            break;
+
+        case 2:
+            do
+            {
+                mainSelection();
+                cout << "\nYour input: ";
+                cin  >> subchoice;
+                //User will get to choose their desired vehicle
+
+                switch(subchoice)
+                {
+                case 1:
+                    mainselection = "Honda($9,100)\n";
+                    mainSelectionCost = 9100;
+                    //Mainselection will be calculated as part of grand total
+                    break;
+                case 2:
+                    mainselection = "Toyota ($8,899)\n";
+                    mainSelectionCost = 8999;
+                    break;
+                case 3:
+                    mainselection = "Ford ($8,520)\n";
+                    mainSelectionCost = 8520;
+                    break;
+                case 4:
+                    mainselection = "KIA ($8,125)\n";
+                    mainSelectionCost = 8125;
+                    break;
+                case 5:
+                    cout << "";
+                    //To distinguish the difference between
+                    //"wrong input" and case 5
+                    break;
+                default:
+                    cout << "Incorrect input.\n";
+                }
+            }while(subchoice != 5);
+            break;
+
+        case 3:
+            do
+            {
+                options();
+                cout << "\nYour input: ";
+                cin  >> subchoice;
+                //User will get to choose their accessories if desired
+
+                switch(subchoice)
+                {
+                case 1:
+                    if(sunroofCheck == 0)
+                    //Check will prevent user from inputting the
+                    //same accessory multiple times
+                    {
+                        option += "Sun roof ($555.99)\n";
+                        optionsCost += 555.99;
+                        optionCount += 1;
+                        sunroofCheck++;
+                    }
+                    else
+                    {
+                        cout << "";
+                        //Place holder
+                    }
+                    break;
+                case 2:
+                    if(airbagCheck == 0)
+                    {
+                        option += "Air bags ($483.45)\n";
+                        optionsCost += 483.45;
+                        optionCount += 1;
+                        airbagCheck++;
+                    }
+                    else
+                    {
+                        cout << "";
+                    }
+                    break;
+                case 3:
+                    if(airconditionerCheck == 0)
+                    {
+                        option += "Air Conditioner ($434.12)\n";
+                        optionsCost += 434.12;
+                        optionCount += 1;
+                        airconditionerCheck++;
+                    }
+                    else
+                    {
+                        cout << "";
+                    }
+                    break;
+                case 4:
+                    if(navigationCheck == 0)
+                    {
+                        option += "Navigation ($390.36)\n";
+                        optionsCost += 390.36;
+                        optionCount += 1;
+                        navigationCheck++;
+                    }
+                    else
+                    {
+                        cout << "";
+                    }
+                    break;
+                case 5:
+                    if(dvdCheck == 0)
+                    {
+                        option += "DVD ($287.90)\n";
+                        optionsCost += 287.90;
+                        optionCount += 1;
+                        dvdCheck++;
+                    }
+                    else
+                    {
+                        cout << "";
+                    }
+                    break;
+                case 6:
+                    option = "";
+                    optionsCost = 0;
+                    optionCount = 0;
+                    sunroofCheck = 0;
+                    airbagCheck = 0;
+                    airconditionerCheck = 0;
+                    navigationCheck = 0;
+                    dvdCheck = 0;
+                    cout << "Options cleared\n";
+                    //In case user would want to start over with their options
+                    //This will clear everything in this sub menu
+                case 7:
+                    cout << "";
+                    break;
+                default:
+                    cout << "Incorrect input.\n";
+                }
+
+            }while(subchoice != 7);
+            break;
+
+        case 4:
+            do
+            {
+                paymentMethod();
+                cout << "\nYour input: ";
+                cin  >> subchoice;
+                //User will input their payment information
+                switch(subchoice)
+                {
+                case 1:
+                    paymentType = "Visa ";
+                    cardnumber = getCardNumber();
+                    payment = getCardPayment(cardnumber, paymentType);
+                    //This method will combine cardnumber and cardtype as
+                    //one string
+                    break;
+                case 2:
+                    paymentType = "Mastercard ";
+                    cardnumber = getCardNumber();
+                    payment = getCardPayment(cardnumber, paymentType);
+                    break;
+                case 3:
+                    payment = "Cash\n";
+                    break;
+                case 4:
+                    cout << "";
+                    break;
+                default:
+                    cout << "Incorrect input.\n";
+
+                }
+            }while(subchoice != 4);
+            break;
+
+        case 5:
+            {
+                status = isOrderComplete(name, phoneNumber, address, mainselection, payment);
+                //This method will check if user is missing any field/input
+                if(status == false)
+                {
+                    cout << displayErrors(name, phoneNumber, address, mainselection, payment);
+                    //If any field(s) is/are missing then user will get a message prompt
+                }
+                else
+                {
+                    grandTotal = computation(mainSelectionCost, optionsCost, TAX);
+                    //Computes the cost of main selection and options if any
+                    gift = gifts(optionCount);
+                    //Determines the gift type based on number of options given by user
+                    displayConfirmation(name, phoneNumber, address, mainselection, payment,
+                                        option, gift, grandTotal, optionCount);
+                                        //Displays the confirmation order
+                }
+                break;
+            }
+        case 6:
+            cout << "";
+            //Exits the program
+            break;
+        default:
+            cout << "\nIncorrect input.\n";
+        }
+
+    }while(choice != 6);
+
+    cout << "\nEnd of the program.\n";
+
+    return 0;
+}
+
+////////////////////////////////////////////////
+////////////////FUNCTIONS//////////////////////
+//////////////////////////////////////////////
+
+void description()
+//Displays description of this program
+{
+    cout << "User will want to purchase a new car because his current car is\n"
+         << "on a verge of breaking down and finds a car application online.\n"
+         << "User will input information like name, phone, address, and payment\n"
+         << "along with the desired vehicle and accessories if desired. The\n"
+         << "program will compute the cost of vehicle with/without accessories\n"
+         << "and display confirmation order. If user is missing any fields then\n"
+         << "the program will display an error message.\n\n"
+         << "Press return after entering a value.\n";
+}
+
+void mainMenu()
+//Display the main menu
+{
+    cout << "\nMain Menu:\n"
+         << "1. Input client information\n"
+         << "2. Main selection\n"
+         << "3. Options\n"
+         << "4. Payment method\n"
+         << "5. Display confirmation information\n"
+         << "6. Exit program\n";
+}
+
+void inputClientInfo()
+//Displays the first sub menu
+{
+    cout << "\nClient Information:\n"
+         << "1. Name\n"
+         << "2. Phone number\n"
+         << "3. Address\n"
+         << "4. Main Menu\n";
+
+}
+
+void mainSelection()
+//Display the second sub menu
+{
+    cout << "\nMain Selection:\n"
+         << "1. Honda($9,100)\n"
+         << "2. Toyota ($8,899)\n"
+         << "3. Ford ($8,520)\n"
+         << "4. KIA ($8,125)\n"
+         << "5. Main Menu\n";
+}
+
+void options()
+//Displays the third sub menu
+{
+    cout << "\nOptions:\n"
+         << "1. Sun roof ($555.99)\n"
+         << "2. Air bags ($483.45)\n"
+         << "3. Air Conditioner ($434.12)\n"
+         << "4. Navigation ($390.36)\n"
+         << "5. DVD ($287.90)\n"
+         << "6. Clear options\n"
+         << "7. Main menu\n";
+}
+
+void paymentMethod()
+//Displays the fourth sub menu
+{
+    cout << "\nPayment Method:\n"
+         << "1. Visa\n"
+         << "2. Mastercard\n"
+         << "3. Cash\n"
+         << "4. Main Menu\n";
+}
+
+string getName()
+//Ask for input for name
+{
+    string name;
+    cout << "Name: ";
+    cin.ignore();
+    getline(cin, name);
+    return name;
+}
+
+string getPhonenumber()
+//Ask for input for phone number
+{
+    string phoneNumber;
+    cout << "PhoneNumber: ";
+    cin.ignore();
+    getline(cin, phoneNumber);
+    return phoneNumber;
+}
+
+string getAddress()
+//Ask for input for address
+{
+    string address;
+    cout << "Address: ";
+    cin.ignore();
+    getline(cin, address);
+    return address;
+}
+
+string getCardNumber()
+//Ask for input for card number if applicable
+{
+    string cardNumber;
+    cout << "Card Number: ";
+    cin.ignore();
+    getline(cin, cardNumber);
+    return cardNumber;
+}
+
+string getCardPayment(string cardNumber, string cardType)
+//Combines card type and card payment
+{
+    string finalpayment;
+    finalpayment = cardType + cardNumber;
+    return finalpayment;
+}
+
+bool isOrderComplete(string name, string phoneNumber, string address,
+                     string mainselection, string payment)
+                     //Checks if all fields are filled
+                     //All it takes is one field to display an error
+                     //message
+{
+    bool status = true;
+    if(name == "")
+    {
+        status = false;
+    }
+    else if(phoneNumber == "")
+    {
+        status = false;
+    }
+    else if(address == "")
+    {
+        status = false;
+    }
+    else if(mainselection == "")
+    {
+        status = false;
+    }
+    else if(payment == "")
+    {
+        status = false;
+    }
+    else
+    {
+        status = true;
+    }
+
+    return status;
+}
+
+string displayErrors(string name, string phoneNumber, string address,
+                     string mainselection, string payment)
+                     //Displays error message
+{
+    string errors;
+
+    cout << "\nPlease complete the following below:\n";
+    //Combines number of fields based on how many field user
+    //decides not to input
+
+    if(name == "")
+    {
+        errors += "Name\n";
+    }
+    if(phoneNumber == "")
+    {
+        errors += "Phone number\n";
+    }
+    if(address == "")
+    {
+        errors += "Address\n";
+    }
+    if(mainselection == "")
+    {
+        errors += "Main selection\n";
+    }
+    if(payment == "")
+    {
+        errors += "Payment\n";
+    }
+
+    return errors;
+}
+
+double computation(double primaryselection, double secondaryselection, double tax)
+//Computes the cost of the main selection and accessories if there is any
+{
+    double total;
+    total = ((primaryselection + secondaryselection) * tax)+(primaryselection + secondaryselection);
+    return total;
+}
+
+string gifts(int optionCount)
+//Checks for gift types based on number of gifts user decides to input
+{
+    string gift;
+    gift = "";
+
+    if(optionCount == 2)
+    {
+        gift = "\nFull tank of gas\n";
+    }
+    else if(optionCount == 3)
+    {
+        gift = "\nCar cover\n";
+    }
+    else if(optionCount >= 4)
+    {
+        gift = "\nOil change\n";
+    }
+
+    return gift;
+}
+
+void displayConfirmation(string name, string phoneNumber, string address, string mainselection,
+                         string payment, string option, string gift, double grandTotal, int optionCount)
+                         //Displays confirmation
+{
+    if(optionCount == 1)
+    //If user selects one option, they would get this version of the message prompt
+    {
+        cout << "\nOrder Confirmation:\nYou have placed an order for:\n" << mainselection << "\nWith the following options:\n"
+             << option << "\nTotal price: $" << grandTotal << "\n\nSold to:   " << name << "\nTelephone: " << phoneNumber
+             << "\nAddress:   " << address << "\nPaid by:   " << payment;
+    }
+    else if(optionCount >= 2)
+    //this version displays gift message
+    {
+
+        cout << "\nOrder Confirmation:\nYou have placed an order for:\n" << mainselection << "\nWith the following options:\n"
+             << option << "\nTotal price: $" << grandTotal << "\n\nCongratulations.\nYou will get the following "
+             << "gift with your order:" << gift << "\nSold to:   " << name << "\nTelephone: " << phoneNumber
+             << "\nAddress:   " << address << "\nPaid by:   " << payment;
+    }
+    else
+    //this version displays confirmation without any options
+    {
+        cout << "\nOrder Confirmation:\nYou have placed an order for:\n" << mainselection << "\nTotal price: $" << grandTotal
+             << "\n\nSold to:   " << name << "\nTelephone: " << phoneNumber << "\nAddress:   " << address
+             << "\nPaid by:   " << payment;
+    }
+}
